@@ -146,7 +146,6 @@ fn floor(file: &str) -> Floor {
 
 fn count_occupied_when_stable(file: &str) -> usize {
     let stable = floor(file).run_until_stable();
-    println!("{}", stable.to_string());
     stable.data.into_iter().filter(|(_, pos)| *pos == Position::Occupied).count()
 }
 

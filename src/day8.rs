@@ -43,9 +43,6 @@ impl Accumulator {
             offset: 0
         }
     }
-    // fn instruction(&self) -> Option<&Instruction> {
-    //     self.instructions.get(self.offset)
-    // }
 
     fn accumulate(&self, instruction: &Instruction) -> isize {
         match instruction {
@@ -116,7 +113,7 @@ mod tests {
 
 }
 
-fn run() {
+pub fn run() {
     let instructions = lines("./input.txt").unwrap().into_iter()
         .flat_map(Instruction::parse)
         .collect::<Vec<Instruction>>();

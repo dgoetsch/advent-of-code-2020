@@ -12,7 +12,6 @@ impl PathFinder {
         if adapters.len() == 1 {
             return 1;
         } else {
-            println!("call {}", self.count);
             return adapters.get(0)
                 .map(|first|{
                     match self.cache.get(first) {
