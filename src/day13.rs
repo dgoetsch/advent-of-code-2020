@@ -85,7 +85,8 @@ mod tests {
     use super::find_earliest_timestamp_that_matches;
     use crate::day13::find_earliest_timestamp_that_matches_file;
 
-    use super::compute_first_valid_schedule
+    use super::compute_first_valid_schedule;
+
     #[test]
     fn test_scenario() {
         assert_eq!(earliest_bus("day-13-test.txt"), (5, 59))
@@ -104,10 +105,10 @@ mod tests {
 
     #[test]
     fn test_theorem() {
-        assert_eq!(compute_first_valid_schedule("17,13".split(',').collect()), compute(17, 13, 1));
-        assert_eq!(compute_first_valid_schedule("17,x,13".split(',').collect()), compute(17, 13, 2));
-        assert_eq!(compute_first_valid_schedule("17,x,x,13".split(',').collect()), compute(17, 13, 3));
-        assert_eq!(compute_first_valid_schedule("17,x,x,x,13".split(',').collect()), compute(17, 13, 4));
+        assert_eq!(find_earliest_timestamp_that_matches("17,13".split(',').collect()), compute_first_valid_schedule(17, 13, 1));
+        assert_eq!(find_earliest_timestamp_that_matches("17,x,13".split(',').collect()), compute_first_valid_schedule(17, 13, 2));
+        assert_eq!(find_earliest_timestamp_that_matches("17,x,x,13".split(',').collect()), compute_first_valid_schedule(17, 13, 3));
+        assert_eq!(find_earliest_timestamp_that_matches("17,x,x,x,13".split(',').collect()), compute_first_valid_schedule(17, 13, 4));
     }
 
 

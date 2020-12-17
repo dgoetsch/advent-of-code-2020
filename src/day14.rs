@@ -6,34 +6,36 @@ enum Command {
 }
 #[derive(Debug, Clone)]
 struct Mask {
-    mask: Vec<(usize,bool)>
+    mask: usize,
+    float: Vec<usize>
 }
 
 impl Mask {
     fn new(mask: &str) -> Mask {
         let reversed = mask.chars().rev().collect::<String>();
+        let mut mask = Mask { mask: 0, float: vec!() };
 
-        Mask {
-            mask: (0..mask.len()).into_iter().flat_map(|idx|
-                reversed.chars().nth(idx).into_iter().flat_map(move |c| match c {
-                    '0' => Some((idx, false)),
-                    '1' => Some((idx, true)),
-                    _ => None
-                })
-            ).collect()
-        }
+        (0..36).into_iter().for_each(|idx|
+            match reversed.chars().nth(idx) {
+                Some('1') => mask.mask = mask.mask | (1 << idx),
+                Some('X') => mask.float.push(idx),
+                 _ => ()
+            }
+        );
+
+        mask
     }
 
-    fn apply(&self, number: usize) -> usize {
-        let two: usize = 2;
-        let thirtySixOnes: usize = (0..36).into_iter().fold(0, |s, idx| two.pow(idx));
-        // let oneThen35Zeros = 2.pow(35);
-        self.mask.clone().into_iter().fold(number, |partial_masked, (idx, bit_value)| {
-            if bit_value {
-                (1 << idx) | partial_masked
-            } else {
-                !(1 << idx) & partial_masked
-            }
+    fn apply(&self, number: usize) -> Vec<usize> {
+        let base = number | self.mask;
+        self.float.clone().into_iter().fold(vec!(base), |so_far, idx| {
+            let one = 1 << idx;
+            let zero = !one;
+            so_far.into_iter()
+                .flat_map(|partial_masked| {
+                    vec!(one | partial_masked, zero & partial_masked).into_iter()
+                })
+                .collect()
         })
     }
 }
@@ -89,7 +91,10 @@ fn count_memory(file: &str) -> usize {
         .fold(Mask::new(""), |mask, command| {
             match command {
                 Command::Assign(m) => {
-                    numbers.insert(m.index, mask.apply(m.value));
+                    mask.apply(m.index).into_iter().for_each(| addr| {
+                        numbers.insert(addr, m.value);
+                    });
+
                     mask
                 },
                 Command::Set(new_mask) => new_mask
@@ -107,21 +112,12 @@ mod test {
     #[test]
     fn test_count() {
         let count = super::count_memory("day-14-test.txt");
-        assert_eq!(count, 165);
+        assert_eq!(count, 208);
     }
     #[test]
     fn test_load() {
         let cmds = super::load("day-14-input.txt");
         println!("{:?}", cmds);
         assert_eq!(cmds.len(), 569)
-    }
-
-    #[test]
-    fn bit_mask() {
-        let mask = Mask::new("XXXXXXXXXXXXXXXXXXXXXXXXXXXXX1XXXX0X");
-        // println!("expect {} << ")
-        assert_eq!(mask.apply(11), 73);
-        assert_eq!(mask.apply(101), 101);
-        assert_eq!(mask.apply(0), 64);
     }
 }
