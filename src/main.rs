@@ -20,6 +20,8 @@ mod day14;
 mod day15;
 mod day16;
 mod day17;
+mod day18;
+mod day19;
 
 fn read_lines<P>(filename: P) -> io::Result<io::Lines<io::BufReader<File>>>
     where P: AsRef<Path>, {
@@ -55,5 +57,7 @@ fn main() {
     // day14::run();
     // day15::run();
     // day16::run();
-    day17::run();
+    // day17::run();
+    // day18::run();
+    day19::run();
 }
